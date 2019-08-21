@@ -30,7 +30,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="信息加载失败" />
+                android:text="信息加载失败"
+                android:textIsSelectable="true"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -59,10 +60,12 @@
                     android:text="ROOT" />
 
                 <ImageView
+                    android:id="@+id/img_root"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
                     app:srcCompat="@drawable/err"
                     tools:ignore="VectorDrawableCompat" />
             </LinearLayout>
@@ -87,10 +90,12 @@
                     android:text="Magisk" />
 
                 <ImageView
+                    android:id="@+id/img_magisk"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
                     app:srcCompat="@drawable/err"
                     tools:ignore="VectorDrawableCompat" />
             </LinearLayout>
