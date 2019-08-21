@@ -48,6 +48,7 @@
 
 
                 <ImageButton
+                    android:id="@+id/bu_cloud"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
@@ -56,6 +57,7 @@
                     tools:ignore="NewApi,VectorDrawableCompat" />
 
                 <ImageButton
+                    android:id="@+id/bu_shutdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
