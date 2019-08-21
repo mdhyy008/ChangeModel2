@@ -2,6 +2,7 @@ package com.dabai.ChangeModel2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
@@ -15,9 +16,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.dabai.ChangeModel2.activity.SettingsActivity;
 import com.dabai.ChangeModel2.utils.shell;
 
 import java.io.DataOutputStream;
@@ -33,7 +36,11 @@ public class MainActivity extends AppCompatActivity {
     TextView text_info, title;
     ImageButton bu_cloud, bu_shutdown;
     ImageView img_root, img_magisk;
-    boolean isroot,ismagisk;
+    boolean isroot, ismagisk;
+
+    CardView card_infoset, not_noper;
+    CardView root_card, magisk_card;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,26 +49,40 @@ public class MainActivity extends AppCompatActivity {
 
         init();
 
+
         check_root();
         check_magisk();
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
 
     }
+
+    /**
+     * 二次检查 美化ui
+     */
+    private void double_check() {
+        if (ismagisk || isroot) {
+            card_infoset.setVisibility(View.VISIBLE);
+            not_noper.setVisibility(View.GONE);
+        } else {
+            card_infoset.setVisibility(View.GONE);
+            not_noper.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     /**
      * 检查 magisk
      */
     private void check_magisk() {
         ismagisk = is_Magisk();
-        if (ismagisk){
+        //ismagisk = false;
+        if (ismagisk) {
+            magisk_card.setVisibility(View.VISIBLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 img_magisk.setImageDrawable(getDrawable(R.drawable.ok));
             }
-        }else {
+        } else {
+            magisk_card.setVisibility(View.GONE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 img_magisk.setImageDrawable(getDrawable(R.drawable.err));
             }
@@ -76,22 +97,26 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                 isroot = is_Root();
-                 runOnUiThread(new Runnable() {
+                isroot = is_Root();
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (isroot) {
+                            root_card.setVisibility(View.VISIBLE);
 
                             bu_shutdown.setVisibility(View.VISIBLE);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 img_root.setImageDrawable(getDrawable(R.drawable.ok));
                             }
                         } else {
+                            root_card.setVisibility(View.GONE);
+
                             bu_shutdown.setVisibility(View.GONE);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 img_root.setImageDrawable(getDrawable(R.drawable.err));
                             }
                         }
+                        double_check();
                     }
                 });
             }
@@ -135,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         title.setText("" + Build.MODEL);
                         title.setSelected(true);
-
                         text_info.setText(info_txt);
                     }
                 });
@@ -185,6 +209,10 @@ public class MainActivity extends AppCompatActivity {
         bu_shutdown = findViewById(R.id.bu_shutdown);
         img_magisk = findViewById(R.id.img_magisk);
         img_root = findViewById(R.id.img_root);
+        card_infoset = findViewById(R.id.infoset_card);
+        not_noper = findViewById(R.id.not_notper);
+        root_card = findViewById(R.id.root_card);
+        magisk_card = findViewById(R.id.magisk_card);
     }
 
 
@@ -240,10 +268,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean is_Root() {
         return exeCmdWithRoot("su");
     }
+
     /**
      * 获取 是否有magisk权限
      */
     public boolean is_Magisk() {
         return new File("/sbin/magisk").exists();
+    }
+
+    public void toSettings(View view) {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 }

@@ -1,4 +1,6 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -6,6 +8,17 @@
         <item name="colorPrimary">#fff</item>
         <item name="colorPrimaryDark">#949090</item>
         <item name="colorAccent">#383737</item>
+        <item name="android:textViewStyle">@style/MyTextViewStyle</item>
+
     </style>
+
+
+
+    <style name="MyTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily" tools:ignore="NewApi">@font/googlesan</item>
+    </style>
+
+
+
 
 </resources>
