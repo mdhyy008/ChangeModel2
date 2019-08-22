@@ -6,8 +6,10 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -15,9 +17,12 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     TextInputEditText m1, m2, m3, m4, m5;
+    private String b1, b2, b3, b4, b5;
+    private MaterialDialog mddia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +73,30 @@ public class MainActivity extends AppCompatActivity {
         check_root();
         check_magisk();
 
+
+        if (get_sharedString("first", "yes").equals("yes")) {
+
+            new MaterialDialog.Builder(this)
+                    .title("免责声明")
+                    .content("使用本软件，对设备造成的所有伤害以及对其他APP造成的影响，软件开发者和程序概不负责")
+                    .cancelable(false)
+                    .positiveText("同意")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            set_sharedString("first", "no");
+                        }
+                    })
+                    .neutralText("退出")
+                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            finish();
+                        }
+                    })
+                    .show();
+
+        }
 
     }
 
@@ -112,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                             String link = "https://www.lanzous.com/b925945";
                                             try {
-                                                new DabaiUtils().web_openLink(context, link);
+                                                new DabaiUtils().openLink(context, link);
                                             } catch (Exception e) {
                                                 Toast.makeText(context, "打开链接失败!", Toast.LENGTH_SHORT).show();
                                             }
@@ -173,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                     String link = "https://dabai2017.gitee.io/blog/2019/08/22/机型修改社区支持/";
                                                     try {
-                                                        new DabaiUtils().web_openLink(context, link);
+                                                        new DabaiUtils().openLink(context, link);
                                                     } catch (Exception e) {
                                                         Toast.makeText(context, "打开链接失败!", Toast.LENGTH_SHORT).show();
                                                     }
@@ -204,6 +235,12 @@ public class MainActivity extends AppCompatActivity {
 
         setListener();
 
+        File backupdir = new File("/sdcard/.modelbackup");
+        if (!backupdir.exists()) {
+            backupdir.mkdir();
+        }
+
+
     }
 
     /**
@@ -220,7 +257,6 @@ public class MainActivity extends AppCompatActivity {
                 info_txt = "model : " + Build.MODEL +
                         "\nbrand : " + Build.BRAND +
                         "\nmanufacturer : " + Build.MANUFACTURER +
-                        "\nproduct : " + Build.PRODUCT +
                         "\ndevice : " + Build.DEVICE +
                         "\n\nandroid version : " + Build.VERSION.RELEASE +
                         "\nSDK version : " + Build.VERSION.SDK_INT;
@@ -465,8 +501,19 @@ public class MainActivity extends AppCompatActivity {
                 .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        String text = "" + getClipText();
-                        parseCode(text);
+
+                        try {
+                            String text = null;
+                            try {
+                                text = "" + getClipText();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            parseCode(text);
+                        } catch (Exception e) {
+                            Toast.makeText(context, "剪切板异常:)", Toast.LENGTH_SHORT).show();
+                        }
+
 
                     }
                 })
@@ -519,7 +566,11 @@ public class MainActivity extends AppCompatActivity {
                 .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        setClipText(getModelCode());
+                        try {
+                            setClipText(getModelCode());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 })
                 .show();
@@ -530,13 +581,13 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param a
      */
-    public void setClipText(String a) {
+    public void setClipText(String a) throws Exception {
         ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         clipboardManager.setText(a);
         Toast.makeText(context, "复制成功", Toast.LENGTH_SHORT).show();
     }
 
-    public String getClipText() {
+    public String getClipText() throws Exception {
         ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         return clipboardManager.getText().toString();
     }
@@ -560,5 +611,206 @@ public class MainActivity extends AppCompatActivity {
         return sp.getString(key, moren);
     }
 
+
+    /**
+     * magisk修改方式
+     *
+     * @param v
+     */
+    public void change_magisk(View v) {
+
+        //magisk模块模式
+        b1 = m1.getText().toString();
+        b2 = m2.getText().toString();
+        b3 = m3.getText().toString();
+        b4 = m4.getText().toString();
+        b5 = m5.getText().toString();
+
+
+        if (!b1.isEmpty() && !b2.isEmpty() && !b3.isEmpty() && !b4.isEmpty() && !b5.isEmpty()) {
+            new MaterialDialog.Builder(this)
+                    .title("magisk模式")
+                    .content("magisk模块挂载机型信息即将更改为\n\nmodel:" + b1 + "\nbrand: " + b2 + "\nmanufacturer: " + b3 + "\nproduct: " + b4 + "\ndevice: " + b5 + "\n\n需要注意的是，magisk模块方式修改的机型不会创建备份，把模块卸载就会恢复")
+                    .positiveText("确认更改")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            changeModel_magisk(b1, b2, b3, b4, b5);
+                        }
+                    })
+                    .negativeText("取消")
+                    .show();
+        } else {
+            Toast.makeText(context, "机型预置每一项都必须填写！", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+
+    //更改magisk挂载型号
+    public void changeModel_magisk(final String mmodel, final String mbrand, final String mmanufacturer, final String mproduct, final String mdevice) {
+
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                //新线程操作
+                String mode[] = {"mount -o rw,remount /system"
+                        , "cp /sbin/.magisk/modules/changemodel2/system.prop /data/system.prop"
+                        , "chmod 0644 /data/system.prop"
+                        , "sed -i 's/^ro.product.brand=.*/ro.product.brand=" + mbrand + "/' /data/system.prop"
+                        , "sed -i 's/^ro.product.model=.*/ro.product.model=" + mmodel + "/' /data/system.prop"
+                        , "sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=" + mmanufacturer + "/' /data/system.prop"
+                        , "sed -i 's/^ro.product.device=.*/ro.product.device=" + mdevice + "/' /data/system.prop"
+                        , "sed -i 's/^ro.build.product=.*/ro.build.product=" + mproduct + "/' /data/system.prop"
+                        , "cp /data/system.prop /sbin/.magisk/modules/changemodel2/system.prop"};
+
+                new shell().execCommand(mode, true);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "更改完成，重启生效", Toast.LENGTH_SHORT).show();
+                    }
+
+                });
+            }
+        }.start();
+    }
+
+
+    /**
+     * root修改方式
+     *
+     * @param v
+     */
+    public void change_root(View v) {
+
+        //magisk模块模式
+        b1 = m1.getText().toString();
+        b2 = m2.getText().toString();
+        b3 = m3.getText().toString();
+        b4 = m4.getText().toString();
+        b5 = m5.getText().toString();
+
+
+        if (!b1.isEmpty() && !b2.isEmpty() && !b3.isEmpty() && !b4.isEmpty() && !b5.isEmpty()) {
+            new MaterialDialog.Builder(this)
+                    .title("ROOT模式")
+                    .content("build.prop文件里的各项值即将更改为\n\nmodel:" + b1 + "\nbrand: " + b2 + "\nmanufacturer: " + b3 + "\nproduct: " + b4 + "\ndevice: " + b5 + "\n\n需要注意的是，ROOT方式修改机型会创建备份，但会有一定风险，我推荐你使用magisk模块方式")
+                    .positiveText("确认更改")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                            changeModel_root(b1, b2, b3, b4, b5);
+
+                        }
+                    })
+                    .negativeText("取消")
+                    .show();
+        } else {
+            Toast.makeText(context, "机型预置每一项都必须填写！", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    //改机型
+    public void changeModel_root(final String mmodel, final String mbrand, final String mmanufacturer, final String mproduct, final String mdevice) {
+
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                //新线程操作
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+
+                String mode[] = {"mount -o rw,remount /system"
+                        , "cp /system/build.prop /sdcard/.modelbackup/" + Build.MODEL.replace(" ", "") + "_" + sdf.format(new Date()) + ".prop"
+                        , "cp /system/build.prop /data/build.prop"
+                        , "chmod 0644 /data/build.prop"
+                        , "sed -i 's/^ro.product.brand=.*/ro.product.brand=" + mbrand + "/' /data/build.prop"
+                        , "sed -i 's/^ro.product.model=.*/ro.product.model=" + mmodel + "/' /data/build.prop"
+                        , "sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=" + mmanufacturer + "/' /data/build.prop"
+                        , "sed -i 's/^ro.product.device=.*/ro.product.device=" + mdevice + "/' /data/build.prop"
+                        , "sed -i 's/^ro.build.product=.*/ro.build.product=" + mproduct + "/' /data/build.prop"
+                        , "cp /data/build.prop /system/build.prop"};
+
+                new shell().execCommand(mode, true);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //更新UI操作
+                        Toast.makeText(context, "更改完成，重启生效", Toast.LENGTH_SHORT).show();
+                    }
+
+                });
+            }
+        }.start();
+    }
+
+
+    public void propbp(View v) {
+        View view = getLayoutInflater().inflate(R.layout.dialog_propbackup, null);
+
+        mddia = new MaterialDialog.Builder(this)
+                .title("build文件恢复")
+                .customView(view, false)
+                .positiveText("关闭")
+                .show();
+
+        ListView lv = view.findViewById(R.id.lv);
+        final File backupdir = new File("/sdcard/.modelbackup");
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, backupdir.list());
+        lv.setAdapter(adapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final File file = new File(backupdir, backupdir.list()[i]);
+
+                new MaterialDialog.Builder(MainActivity.this)
+                        .title("警告")
+                        .content("确认恢复到 " + file.getName() + " 嘛？")
+                        .positiveText("确认")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        super.run();
+                                        //新线程操作
+
+                                        String mode[] = {"mount -o rw,remount /system"
+                                                , "cp " + file.getAbsolutePath() + " /system/build.prop"};
+
+                                        new shell().execCommand(mode, true);
+
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                //更新UI操作
+                                                Toast.makeText(context, "恢复完成，重启生效", Toast.LENGTH_SHORT).show();
+                                                mddia.dismiss();
+                                            }
+
+                                        });
+                                    }
+                                }.start();
+
+                            }
+                        })
+                        .negativeText("取消")
+                        .show();
+
+            }
+        });
+
+    }
 
 }

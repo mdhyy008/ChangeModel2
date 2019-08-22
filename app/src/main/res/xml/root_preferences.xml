@@ -14,37 +14,51 @@
   ~ limitations under the License.
   -->
 
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="页面">
 
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+        <PreferenceScreen
+            android:key="codes"
+            android:title="机型代码库" />
+
+        <PreferenceScreen
+            android:key="peoples"
+            android:title="社区支持" />
+
+        <PreferenceScreen
+            android:key="magiskmoudles"
+            android:title="机型修改magisk模块下载" />
+
 
     </PreferenceCategory>
+    <PreferenceCategory app:title="其他">
 
-    <PreferenceCategory app:title="@string/sync_header">
 
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
+        <PreferenceScreen
+            android:key="alipay"
+            android:title="支付宝捐赠" />
 
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="关于">
+
+
+        <PreferenceScreen
+            android:key="tomarket"
+            android:title="应用市场更新地址" />
+
+        <PreferenceScreen
+            android:key="github"
+            android:title="开源地址" />
+
+        <PreferenceScreen
+            android:key="about"
+            android:title="关于本程序" />
+
 
     </PreferenceCategory>
 
