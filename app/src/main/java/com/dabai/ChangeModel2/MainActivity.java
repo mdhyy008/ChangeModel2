@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 img_magisk.setImageDrawable(getDrawable(R.drawable.ok));
             }
 
-            if (!new File("/sbin/.magisk/modules/taich").exists()) {
+            if (!new File("/sbin/.magisk/modules/changemodel2").exists()) {
                 magisk_card.setVisibility(View.GONE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     img_magisk.setImageDrawable(getDrawable(R.drawable.help2));
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                                    feedback("["+Build.MODEL+"]提交机型代码", getModelCode());
+                                    feedback("[" + Build.MODEL + "]提交机型代码", getModelCode());
 
                                 }
                             })
@@ -320,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             if (code == 200) {
                                 Toast.makeText(getApplicationContext(), "提交成功", Toast.LENGTH_SHORT).show();
+                                set_sharedString("firstsend", "no");
                             } else {
                                 Toast.makeText(getApplicationContext(), "提交失败", Toast.LENGTH_SHORT).show();
                             }
