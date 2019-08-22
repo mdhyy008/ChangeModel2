@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="机型更改预设" />
+                android:text="机型更改预置" />
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -27,6 +27,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/m1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="model" />
@@ -37,6 +38,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/m2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="brand" />
@@ -47,6 +49,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/m3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="manufacturer" />
@@ -57,6 +60,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/m4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="product" />
@@ -67,6 +71,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/m5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="device" />

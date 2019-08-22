@@ -19,11 +19,12 @@
                 android:layout_height="wrap_content"
                 android:text="ROOT模式修改"
                 android:layout_margin="10dp"/>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍"
-                android:layout_margin="10dp"/>
+                android:layout_margin="10dp"
+                android:text="通过Shell命令直接修改build.prop文件，达到伪装机型的效果" />
 
             <Button
                 android:layout_width="match_parent"
@@ -56,11 +57,12 @@
                 android:layout_height="wrap_content"
                 android:text="Magisk模式修改"
                 android:layout_margin="10dp"/>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍"
-                android:layout_margin="10dp"/>
+                android:layout_margin="10dp"
+                android:text="通过挂载特定magisk模块，实现基础机型伪装，后续可以通过本软件进行高级修改" />
 
             <Button
                 android:layout_width="match_parent"
@@ -88,22 +90,27 @@
                 android:layout_height="wrap_content"
                 android:text="导入/导出"
                 android:layout_margin="10dp"/>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍"
-                android:layout_margin="10dp"/>
+                android:layout_margin="10dp"
+                android:text="导入：把机型码转换为机型预置，写入到编辑框\n导出：把你的机型预置导出为机型码" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:text="导入" />
+                android:text="导入"
+                android:onClick="into_code"
+                />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:text="导出本机机型码" />
+                android:text="导出本机机型码"
+                android:onClick="backup_code"
+                />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
