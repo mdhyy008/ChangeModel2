@@ -41,7 +41,29 @@ public class HtmlUtils
 
     //获取网站指定 前文本和后文本 批量中间的string
 
-    public List<String> getHtmlSubText(String link,String start,String end) throws Exception{
+    public String getHtml(String link) throws Exception{
+
+        subtext = new StringBuffer();
+
+        URL suburl = new URL(link);
+
+        br = new BufferedReader(new InputStreamReader(suburl.openStream()));
+        data = new char[1024];
+
+        while (br.read(data) != -1)
+        {
+            subtext.append(dataz);
+        }
+        br.close();
+
+        return subtext.toString();
+    }
+
+
+
+    //获取网站指定 前文本和后文本 批量中间的string
+
+    public ArrayList<String> getHtmlSubText(String link,String start,String end) throws Exception{
         subtextres = new ArrayList<>();
         subtext = new StringBuffer();
 
@@ -66,13 +88,12 @@ public class HtmlUtils
         while(m.find()) {
             String subt = m.group(1);//m.group(1)不包括这两个字符
 
-            subtextres.add(subt);
+            subtextres.add(subt.replace("<br>","\n"));
             //Log.d("dabai", "getHtmlSubText: "+subt);
         }
 
 
-
-        return subtextres;
+        return (ArrayList<String>) subtextres;
     }
 
 

@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:padding="20dp"
-                    app:srcCompat="@drawable/backup1"
+                    app:srcCompat="@drawable/cloud3"
                     tools:ignore="NewApi,VectorDrawableCompat" />
 
                 <ImageButton

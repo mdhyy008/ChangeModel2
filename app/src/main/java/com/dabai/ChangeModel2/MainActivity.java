@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +33,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.dabai.ChangeModel2.activity.SettingsActivity;
 import com.dabai.ChangeModel2.utils.Base64;
 import com.dabai.ChangeModel2.utils.DabaiUtils;
+import com.dabai.ChangeModel2.utils.HtmlUtils;
 import com.dabai.ChangeModel2.utils.shell;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -41,6 +49,7 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -61,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
     TextInputEditText m1, m2, m3, m4, m5;
     private String b1, b2, b3, b4, b5;
     private MaterialDialog mddia;
+    private PopupWindow pw;
+    private Document doc;
+    private String TAG = "dabai";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +109,14 @@ public class MainActivity extends AppCompatActivity {
                     .show();
 
         }
+
+
+        View pwview = getLayoutInflater().inflate(R.layout.menu_cloud, null);
+        pw = new PopupWindow(MainActivity.this);
+        pw.setContentView(pwview);
+        pw.setFocusable(true);
+        pw.setBackgroundDrawable(new BitmapDrawable());
+
 
     }
 
@@ -306,35 +326,85 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //提交到社区
 
-                if (get_sharedString("firstsend", "yes").equals("yes")) {
+                pw.showAsDropDown(bu_cloud);
 
-                    new MaterialDialog.Builder(MainActivity.this)
-                            .title("提示")
-                            .content("你要把本机机型代码提交到代码库嘛？点击确定申请，等待审核通过即可")
-                            .positiveText("确定")
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                                    feedback("[" + Build.MODEL + "]提交机型代码", getModelCode());
-
-                                }
-                            })
-                            .negativeText("取消")
-                            .show();
-
-                } else {
-                    new MaterialDialog.Builder(MainActivity.this)
-                            .title("提示")
-                            .content("一个设备只能提交一次哦")
-                            .positiveText("确认")
-                            .show();
-                }
 
             }
         });
     }
 
+
+    public void backcode(View b) {
+
+
+        new MaterialDialog.Builder(MainActivity.this)
+                .title("提示")
+                .content("你要把本机机型代码提交到代码库嘛？点击确定申请，等待审核通过即可")
+                .positiveText("确定")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                        //检查有没有重复
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+
+                                    doc = Jsoup.connect("https://dabai2017.gitee.io/blog/2019/08/22/机型修改代码库/").get();
+                                    Elements elements = doc.select("p");
+                                    if (elements.html().contains(getModelCode())) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                new MaterialDialog.Builder(MainActivity.this)
+                                                        .title("提示")
+                                                        .content("你的机型码已存在于机型库，请勿重复提交")
+                                                        .positiveText("确认")
+                                                        .show();
+                                            }
+                                        });
+
+                                    } else {
+
+                                        feedback("[" + Build.MODEL + "]提交机型代码", getModelCode());
+
+                                    }
+
+                                } catch (Exception e) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(), "应该是没有网络吧", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+
+                            }
+                        }).start();
+
+
+                    }
+                })
+                .negativeText("取消")
+                .show();
+
+
+        pw.dismiss();
+
+    }
+
+    public void downcode(View b) {
+        try {
+            showCodes();
+        } catch (Exception e) {
+            Toast.makeText(context, "可能是没网:)\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        pw.dismiss();
+    }
 
     public void feedback(final String title, final String text) {
         new Thread(new Runnable() {
@@ -356,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             if (code == 200) {
                                 Toast.makeText(getApplicationContext(), "提交成功", Toast.LENGTH_SHORT).show();
-                                set_sharedString("firstsend", "no");
+
                             } else {
                                 Toast.makeText(getApplicationContext(), "提交失败", Toast.LENGTH_SHORT).show();
                             }
@@ -397,6 +467,7 @@ public class MainActivity extends AppCompatActivity {
         m3 = findViewById(R.id.m3);
         m4 = findViewById(R.id.m4);
         m5 = findViewById(R.id.m5);
+
     }
 
 
@@ -543,6 +614,7 @@ public class MainActivity extends AppCompatActivity {
                 m3.setText(a[2]);
                 m4.setText(a[3]);
                 m5.setText(a[4]);
+                Toast.makeText(context, "导入成功！", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 Toast.makeText(context, "机型代码包含错误的信息", Toast.LENGTH_SHORT).show();
             }
@@ -812,5 +884,99 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
+    private View view;
+    private MaterialDialog codedia;
+    private ArrayList<String> data;
+
+    public void showCodes() throws Exception {
+
+        view = getLayoutInflater().inflate(R.layout.dialog_codes, null);
+
+
+        new Thread(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    data = new HtmlUtils().getHtmlSubText("https://dabai2017.gitee.io/blog/2019/08/22/机型修改代码库/", "<p>", "</p>");
+                } catch (Exception e) {
+                }
+
+                runOnUiThread(new Runnable() {
+                    private MaterialDialog showCodeInfo;
+
+                    @Override
+                    public void run() {
+
+
+                        if (data == null) {
+                            Toast.makeText(context, "数据库出错！", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+
+                        ListView lv = view.findViewById(R.id.lv);
+                        ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, data);
+                        lv.setAdapter(adapter);
+
+
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                final String tect = data.get(i);
+
+                                final String text = tect.split("\n")[1];
+
+                                Base64 base = new Base64();
+                                String mDerive = base.decode(text);
+                                String a[] = mDerive.split("@");
+
+                                showCodeInfo = new MaterialDialog.Builder(MainActivity.this)
+                                        .title(a[0])
+                                        .content("机型码:\n" + text + "\n\n机型信息:\n" + "model:" + a[0] + "\nbrand:" + a[1] + "\nmanufacturer:" + a[2] + "\nproduct:" + a[3] + "\ndevice:" + a[4])
+                                        .positiveText("直接导入")
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                parseCode(text);
+                                                codedia.dismiss();
+                                            }
+                                        })
+                                        .negativeText("复制机型码")
+                                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                try {
+                                                    setClipText(text);
+                                                } catch (Exception e) {
+                                                }
+                                            }
+                                        })
+                                        .neutralText("取消")
+                                        .show();
+                            }
+                        });
+
+
+                    }
+                });
+            }
+        }).start();
+
+        if (data == null) {
+            return;
+        }
+        codedia = new MaterialDialog.Builder(this)
+                .title("代码库")
+                .customView(view, false)
+                .positiveText("关闭")
+                .show();
+
+
+    }
+
 
 }

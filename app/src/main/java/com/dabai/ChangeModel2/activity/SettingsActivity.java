@@ -2,7 +2,12 @@ package com.dabai.ChangeModel2.activity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -10,8 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.dabai.ChangeModel2.R;
 import com.dabai.ChangeModel2.utils.DabaiUtils;
+import com.dabai.ChangeModel2.utils.HtmlUtils;
+
+import java.util.ArrayList;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -27,9 +36,14 @@ public class SettingsActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+
+
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
+        private ArrayList data;
+
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
@@ -82,6 +96,8 @@ public class SettingsActivity extends AppCompatActivity {
                         new DabaiUtils().openLink(getContext(),"https://dabai2017.gitee.io/blog/2019/08/22/机型修改代码库/");
                     } catch (Exception e) {
                     }
+
+
                     break;
                 case "peoples":
                     try {
@@ -96,10 +112,9 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     break;
 
-
-
             }
             return false;
         }
     }
+    
 }
