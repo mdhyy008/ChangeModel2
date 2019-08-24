@@ -905,6 +905,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                 }
 
+
                 runOnUiThread(new Runnable() {
                     private MaterialDialog showCodeInfo;
 
@@ -966,7 +967,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
+
         if (data == null) {
+            Toast.makeText(context, "数据库已刷新，请再次点击导入", Toast.LENGTH_SHORT).show();
             return;
         }
         codedia = new MaterialDialog.Builder(this)

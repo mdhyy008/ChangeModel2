@@ -22,15 +22,18 @@
 
         <PreferenceScreen
             android:key="codes"
-            android:title="机型代码库" />
+            android:title="机型代码库"
+            android:icon="@drawable/codess"/>
 
         <PreferenceScreen
             android:key="peoples"
-            android:title="社区支持" />
+            android:title="社区支持"
+            android:icon="@drawable/shequ" />
 
         <PreferenceScreen
             android:key="magiskmoudles"
-            android:title="机型修改magisk模块下载" />
+            android:title="机型修改magisk模块下载"
+            android:icon="@drawable/xiazai"/>
 
 
     </PreferenceCategory>
@@ -39,7 +42,14 @@
 
         <PreferenceScreen
             android:key="alipay"
-            android:title="支付宝捐赠" />
+            android:title="支付宝捐赠"
+            android:icon="@drawable/juanzeng" />
+
+
+        <PreferenceScreen
+            android:key="shareapp"
+            android:title="分享软件"
+            android:icon="@drawable/shareapp3"/>
 
 
 
@@ -49,15 +59,19 @@
 
         <PreferenceScreen
             android:key="tomarket"
-            android:title="应用市场更新地址" />
+            android:title="应用市场更新"
+            android:icon="@drawable/gengxin" />
 
         <PreferenceScreen
             android:key="github"
-            android:title="开源地址" />
+            android:title="开源地址"
+            android:icon="@drawable/git" />
 
         <PreferenceScreen
             android:key="about"
-            android:title="关于本程序" />
+            android:title="关于本程序"
+            android:icon="@drawable/abouta"
+            />
 
 
     </PreferenceCategory>

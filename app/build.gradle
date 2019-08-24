@@ -7,7 +7,7 @@ android {
         applicationId "com.dabai.ChangeModel2"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 5
+        versionCode 9
         versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

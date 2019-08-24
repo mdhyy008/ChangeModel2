@@ -3,18 +3,22 @@ package com.dabai.ChangeModel2.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dabai.ChangeModel2.R;
 import com.dabai.ChangeModel2.utils.DabaiUtils;
@@ -36,7 +40,6 @@ public class SettingsActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
 
 
     }
@@ -87,13 +90,13 @@ public class SettingsActivity extends AppCompatActivity {
 
                 case "about":
                     try {
-                        new DabaiUtils().openLink(getContext(),"https://dabai2017.gitee.io/blog/2019/08/23/机型更改关于信息/");
+                        new DabaiUtils().openLink(getContext(), "https://dabai2017.gitee.io/blog/2019/08/23/机型更改关于信息/");
                     } catch (Exception e) {
                     }
                     break;
                 case "codes":
                     try {
-                        new DabaiUtils().openLink(getContext(),"https://dabai2017.gitee.io/blog/2019/08/22/机型修改代码库/");
+                        new DabaiUtils().openLink(getContext(), "https://dabai2017.gitee.io/blog/2019/08/22/机型修改代码库/");
                     } catch (Exception e) {
                     }
 
@@ -101,20 +104,41 @@ public class SettingsActivity extends AppCompatActivity {
                     break;
                 case "peoples":
                     try {
-                        new DabaiUtils().openLink(getContext(),"https://dabai2017.gitee.io/blog/2019/08/22/机型修改社区支持/");
+                        new DabaiUtils().openLink(getContext(), "https://dabai2017.gitee.io/blog/2019/08/22/机型修改社区支持/");
                     } catch (Exception e) {
                     }
                     break;
                 case "magiskmoudles":
                     try {
-                        new DabaiUtils().openLink(getContext(),"https://www.lanzous.com/b925945");
+                        new DabaiUtils().openLink(getContext(), "https://www.lanzous.com/b925945");
                     } catch (Exception e) {
                     }
+                    break;
+                case "shareapp":
+
+                    ImageView img = new ImageView(getContext());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        img.setImageDrawable(getActivity().getDrawable(R.drawable.aboutlink));
+
+                        new MaterialDialog.Builder(getContext())
+                                .title("扫码下载")
+                                .customView(img, false)
+                                .positiveText("分享到好友")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        new DabaiUtils().sendText(getContext(),"推荐应用 【机型更改第二版】：\n https://dabai2017.gitee.io/blog/2019/08/23/%E6%9C%BA%E5%9E%8B%E6%9B%B4%E6%94%B9%E5%85%B3%E4%BA%8E%E4%BF%A1%E6%81%AF/ \n 分享自【机型更改App】");
+                                    }
+                                })
+                                .show();
+
+                    }
+
                     break;
 
             }
             return false;
         }
     }
-    
+
 }
