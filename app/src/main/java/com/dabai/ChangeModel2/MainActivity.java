@@ -205,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } else {
                             root_card.setVisibility(View.GONE);
-
                             bu_shutdown.setVisibility(View.GONE);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 img_root.setImageDrawable(getDrawable(R.drawable.err));
@@ -826,62 +825,71 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void propbp(View v) {
-        View view = getLayoutInflater().inflate(R.layout.dialog_propbackup, null);
 
-        mddia = new MaterialDialog.Builder(this)
-                .title("build文件恢复")
-                .customView(view, false)
-                .positiveText("关闭")
-                .show();
 
-        ListView lv = view.findViewById(R.id.lv);
-        final File backupdir = new File("/sdcard/.modelbackup");
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, backupdir.list());
-        lv.setAdapter(adapter);
+        try {
+            View view = getLayoutInflater().inflate(R.layout.dialog_propbackup, null);
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final File file = new File(backupdir, backupdir.list()[i]);
+            mddia = new MaterialDialog.Builder(this)
+                    .title("build文件恢复")
+                    .customView(view, false)
+                    .positiveText("关闭")
+                    .show();
 
-                new MaterialDialog.Builder(MainActivity.this)
-                        .title("警告")
-                        .content("确认恢复到 " + file.getName() + " 嘛？")
-                        .positiveText("确认")
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+            ListView lv = view.findViewById(R.id.lv);
+            final File backupdir = new File("/sdcard/.modelbackup");
 
-                                new Thread() {
-                                    @Override
-                                    public void run() {
-                                        super.run();
-                                        //新线程操作
 
-                                        String mode[] = {"mount -o rw,remount /system"
-                                                , "cp " + file.getAbsolutePath() + " /system/build.prop"};
+            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, backupdir.list());
+            lv.setAdapter(adapter);
 
-                                        new shell().execCommand(mode, true);
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    final File file = new File(backupdir, backupdir.list()[i]);
 
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                //更新UI操作
-                                                Toast.makeText(context, "恢复完成，重启生效", Toast.LENGTH_SHORT).show();
-                                                mddia.dismiss();
-                                            }
+                    new MaterialDialog.Builder(MainActivity.this)
+                            .title("警告")
+                            .content("确认恢复到 " + file.getName() + " 嘛？")
+                            .positiveText("确认")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                                        });
-                                    }
-                                }.start();
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            super.run();
+                                            //新线程操作
 
-                            }
-                        })
-                        .negativeText("取消")
-                        .show();
+                                            String mode[] = {"mount -o rw,remount /system"
+                                                    , "cp " + file.getAbsolutePath() + " /system/build.prop"};
 
-            }
-        });
+                                            new shell().execCommand(mode, true);
+
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    //更新UI操作
+                                                    Toast.makeText(context, "恢复完成，重启生效", Toast.LENGTH_SHORT).show();
+                                                    mddia.dismiss();
+                                                }
+
+                                            });
+                                        }
+                                    }.start();
+
+                                }
+                            })
+                            .negativeText("取消")
+                            .show();
+
+                }
+            });
+        } catch (Exception e) {
+            Toast.makeText(context, "没有备份文件", Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 
@@ -969,7 +977,25 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (data == null) {
-            Toast.makeText(context, "数据库已刷新，请再次点击导入", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "数据库已刷新，请再次点击导入", Toast.LENGTH_SHORT).show();
+
+            new MaterialDialog.Builder(this)
+                    .title("提示")
+                    .content("数据库已刷新，请点击确认查看机型库")
+                    .positiveText("确认")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            try {
+                                showCodes();
+                            } catch (Exception e) {
+                                Toast.makeText(context, "可能是没网:)\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .negativeText("取消")
+                    .show();
+
             return;
         }
         codedia = new MaterialDialog.Builder(this)
