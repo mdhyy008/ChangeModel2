@@ -74,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private Document doc;
     private String TAG = "dabai";
 
+    Button daoru;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,11 +94,19 @@ public class MainActivity extends AppCompatActivity {
                     .title("免责声明")
                     .content("使用本软件，对设备造成的所有伤害以及对其他APP造成的影响，软件开发者和程序概不负责")
                     .cancelable(false)
-                    .positiveText("同意")
+                    .positiveText("同意并查看帮助")
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             set_sharedString("first", "no");
+
+                            String link = "https://dabai2017.gitee.io/blog/2019/08/28/%E6%9C%BA%E5%9E%8B%E4%BF%AE%E6%94%B9%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3/";
+                            try {
+                                new DabaiUtils().openLink(context, link);
+                            } catch (Exception e) {
+                                Toast.makeText(context, "打开链接失败!", Toast.LENGTH_SHORT).show();
+                            }
+
                         }
                     })
                     .neutralText("退出")
@@ -130,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             card_infoset.setVisibility(View.GONE);
             not_noper.setVisibility(View.VISIBLE);
+            daoru = findViewById(R.id.daoru);
+            daoru.setVisibility(View.GONE);
         }
     }
 
@@ -180,6 +192,36 @@ public class MainActivity extends AppCompatActivity {
             magisk_card.setVisibility(View.GONE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 img_magisk.setImageDrawable(getDrawable(R.drawable.err));
+
+
+                img_magisk.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        new MaterialDialog.Builder(MainActivity.this)
+                                .title("提示")
+                                .content("检测到本机未安装magisk程序支持，请先去安装magisk程序")
+                                .positiveText("社区支持")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        String link = "https://dabai2017.gitee.io/blog/2019/08/22/机型修改社区支持/";
+                                        try {
+                                            new DabaiUtils().openLink(context, link);
+                                        } catch (Exception e) {
+                                            Toast.makeText(context, "打开链接失败!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                })
+                                .negativeText("取消")
+                                .show();
+                    }
+                });
+
+
+
+
+
+
             }
         }
     }
@@ -225,7 +267,8 @@ public class MainActivity extends AppCompatActivity {
                                                     try {
                                                         new DabaiUtils().openLink(context, link);
                                                     } catch (Exception e) {
-                                                        Toast.makeText(context, "打开链接失败!", Toast.LENGTH_SHORT).show();
+                                                        Log.d(TAG, "onClick: "+e.getMessage());
+                                                        Toast.makeText(context, "打开链接失败!"+e.getMessage(), Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             })

@@ -31,8 +31,14 @@
             android:icon="@drawable/shequ" />
 
         <PreferenceScreen
+            android:key="helps"
+            android:title="软件帮助"
+            android:icon="@drawable/helps1"/>
+
+
+        <PreferenceScreen
             android:key="magiskmoudles"
-            android:title="机型修改magisk模块下载"
+            android:title="magisk模块下载"
             android:icon="@drawable/xiazai"/>
 
 

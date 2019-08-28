@@ -114,6 +114,12 @@ public class SettingsActivity extends AppCompatActivity {
                     } catch (Exception e) {
                     }
                     break;
+                case "helps":
+                    try {
+                        new DabaiUtils().openLink(getContext(), "https://dabai2017.gitee.io/blog/2019/08/28/%E6%9C%BA%E5%9E%8B%E4%BF%AE%E6%94%B9%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3/");
+                    } catch (Exception e) {
+                    }
+                    break;
                 case "shareapp":
 
                     ImageView img = new ImageView(getContext());

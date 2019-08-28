@@ -27,12 +27,12 @@
                 android:text="导入：把机型码转换为机型预置，写入到编辑框\n导出：把你的机型预置导出为机型码" />
 
             <Button
+                android:id="@+id/daoru"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:text="导入"
                 android:onClick="into_code"
-                />
+                android:text="导入" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
