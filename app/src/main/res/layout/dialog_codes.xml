@@ -6,5 +6,14 @@
     <ListView
         android:id="@+id/lv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <ProgressBar
+        android:id="@+id/jiazaitips"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="30dp"
+        />
 </LinearLayout>

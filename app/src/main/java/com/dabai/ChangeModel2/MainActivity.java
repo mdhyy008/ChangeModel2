@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -218,10 +219,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-
-
-
-
             }
         }
     }
@@ -267,8 +264,8 @@ public class MainActivity extends AppCompatActivity {
                                                     try {
                                                         new DabaiUtils().openLink(context, link);
                                                     } catch (Exception e) {
-                                                        Log.d(TAG, "onClick: "+e.getMessage());
-                                                        Toast.makeText(context, "打开链接失败!"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                        Log.d(TAG, "onClick: " + e.getMessage());
+                                                        Toast.makeText(context, "打开链接失败!" + e.getMessage(), Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             })
@@ -397,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     doc = Jsoup.connect("https://dabai2017.gitee.io/blog/2019/08/22/机型修改代码库/").get();
                                     Elements elements = doc.select("p");
+
                                     if (elements.html().contains(getModelCode())) {
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -945,12 +943,18 @@ public class MainActivity extends AppCompatActivity {
 
         view = getLayoutInflater().inflate(R.layout.dialog_codes, null);
 
+        codedia = new MaterialDialog.Builder(this)
+                .title("机型代码库")
+                .customView(view, false)
+                .positiveText("关闭")
+                .show();
 
         new Thread(new Runnable() {
 
 
             @Override
             public void run() {
+
                 try {
                     data = new HtmlUtils().getHtmlSubText("https://dabai2017.gitee.io/blog/2019/08/22/机型修改代码库/", "<p>", "</p>");
                 } catch (Exception e) {
@@ -963,24 +967,30 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
-
-                        if (data == null) {
-                            Toast.makeText(context, "数据库出错！", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-
                         ListView lv = view.findViewById(R.id.lv);
 
                         ArrayList titledata = new ArrayList();
 
-                        for (String a:data){
+                        if (data == null){
+                            new MaterialDialog.Builder(MainActivity.this)
+                                    .title("提示")
+                                    .content("不能连接到机型库，可能是你的网络出现了问题")
+                                    .positiveText("确定")
+                                    .show();
+
+                            codedia.dismiss();
+                            return;
+                        }
+
+                        for (String a : data) {
                             titledata.add(a.split("\n")[0]);
                         }
 
                         ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, titledata);
                         lv.setAdapter(adapter);
 
+                        ProgressBar tips = view.findViewById(R.id.jiazaitips);
+                        tips.setVisibility(View.GONE);
 
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -1024,36 +1034,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }).start();
-
-
-        if (data == null) {
-            //Toast.makeText(context, "数据库已刷新，请再次点击导入", Toast.LENGTH_SHORT).show();
-
-            new MaterialDialog.Builder(this)
-                    .title("提示")
-                    .content("数据库已刷新，请点击确认查看机型库")
-                    .positiveText("确认")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            try {
-                                showCodes();
-                            } catch (Exception e) {
-                                Toast.makeText(context, "可能是没网:)\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    })
-                    .negativeText("取消")
-                    .show();
-
-            return;
-        }
-        codedia = new MaterialDialog.Builder(this)
-                .title("机型代码库")
-                .customView(view, false)
-                .positiveText("关闭")
-                .show();
-
 
     }
 
