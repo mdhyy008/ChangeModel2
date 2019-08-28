@@ -971,7 +971,14 @@ public class MainActivity extends AppCompatActivity {
 
 
                         ListView lv = view.findViewById(R.id.lv);
-                        ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, data);
+
+                        ArrayList titledata = new ArrayList();
+
+                        for (String a:data){
+                            titledata.add(a.split("\n")[0]);
+                        }
+
+                        ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, titledata);
                         lv.setAdapter(adapter);
 
 
@@ -1042,7 +1049,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         codedia = new MaterialDialog.Builder(this)
-                .title("代码库")
+                .title("机型代码库")
                 .customView(view, false)
                 .positiveText("关闭")
                 .show();
