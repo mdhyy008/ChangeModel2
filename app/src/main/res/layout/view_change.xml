@@ -41,6 +41,24 @@
                 android:onClick="backup_code"
                 />
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:text="导出到二维码"
+                android:onClick="code_qr"
+
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:text="扫描机型二维码"
+                android:onClick="code_scanner"
+
+                />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
