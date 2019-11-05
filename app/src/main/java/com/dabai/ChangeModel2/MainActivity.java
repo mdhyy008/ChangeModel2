@@ -101,39 +101,6 @@ public class MainActivity extends AppCompatActivity {
         check_magisk();
 
 
-        if (get_sharedString("first", "yes").equals("yes")) {
-
-            new MaterialDialog.Builder(this)
-                    .title("免责声明")
-                    .content("使用本软件，对设备造成的所有伤害以及对其他APP造成的影响，软件开发者和程序概不负责")
-                    .cancelable(false)
-                    .positiveText("同意并查看帮助")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            set_sharedString("first", "no");
-
-                            String link = "https://dabai2017.gitee.io/blog/2019/08/28/%E6%9C%BA%E5%9E%8B%E4%BF%AE%E6%94%B9%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3/";
-                            try {
-                                new DabaiUtils().openLink(context, link);
-                            } catch (Exception e) {
-                                Toast.makeText(context, "打开链接失败!", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    })
-                    .neutralText("退出")
-                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            finish();
-                        }
-                    })
-                    .show();
-
-        }
-
-
         View pwview = getLayoutInflater().inflate(R.layout.menu_cloud, null);
         pw = new PopupWindow(MainActivity.this);
         pw.setContentView(pwview);
@@ -294,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
     }
+
 
     /**
      * 初始化程序
