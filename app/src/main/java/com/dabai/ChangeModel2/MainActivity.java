@@ -41,6 +41,7 @@ import com.dabai.ChangeModel2.activity.SettingsActivity;
 import com.dabai.ChangeModel2.utils.Base64;
 import com.dabai.ChangeModel2.utils.DabaiUtils;
 import com.dabai.ChangeModel2.utils.HtmlUtils;
+import com.dabai.ChangeModel2.utils.ShellUtils;
 import com.dabai.ChangeModel2.utils.shell;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.zxing.BarcodeFormat;
@@ -769,6 +770,10 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 super.run();
                 //新线程操作
+
+                ShellUtils.remount(ShellUtils.WRITEABLE);
+
+
                 String mode[] = {"mount -o rw,remount /system"
                         , "cp /sbin/.magisk/modules/changemodel2/system.prop /data/system.prop"
                         , "chmod 0644 /data/system.prop"
@@ -839,6 +844,8 @@ public class MainActivity extends AppCompatActivity {
                 //新线程操作
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+
+                ShellUtils.remount(ShellUtils.WRITEABLE);
 
                 String mode[] = {"mount -o rw,remount /system"
                         , "cp /system/build.prop /sdcard/.modelbackup/" + Build.MODEL.replace(" ", "") + "_" + sdf.format(new Date()) + ".prop"

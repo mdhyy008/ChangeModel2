@@ -7,8 +7,8 @@ android {
         applicationId "com.dabai.ChangeModel2"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 30
-        versionName "1.5"
+        versionCode 40
+        versionName "1.6_"+versionCode
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
